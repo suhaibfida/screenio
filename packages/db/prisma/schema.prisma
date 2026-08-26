@@ -16,5 +16,5 @@ model User{
   id       String @id @default(uuid())
   username String @unique
   email    String @unique
-  passowrd String
+  password String
 }
