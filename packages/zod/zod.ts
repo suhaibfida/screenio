@@ -8,4 +8,4 @@ const signupSchema= z.object({
         email:z.email(),
         password:z.string().min(8).max(100)
     })
-export {signupSchema}
+export {signupSchema,loginSchema}

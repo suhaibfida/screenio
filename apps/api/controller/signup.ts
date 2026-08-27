@@ -1,11 +1,14 @@
 import {Request,Response} from "express"
 import {signupSchema} from "@repo/zod/zod"
 import {prisma} from "@repo/db/prisma"
+import bcrypt from "bcrypt"
+import "dotenv/config"
 interface user{
     username:String,
     email :String,
     password:String
 }
+const salt=process.env.SALT
 const signup =async (req:Request,res:Response)=>{
     try{
             const {username,email,password}:user=req.body
@@ -31,11 +34,13 @@ const signup =async (req:Request,res:Response)=>{
             })
         }
         console.log("here")
+        const hashedPassword=await bcrypt.hash(result.data.password,10);
+
     const user=await prisma.user.create({
         data:{
             username:result.data.username,
             email:result.data.email,
-            password:result.data.password
+            password:hashedPassword
         }
     })
     console.log("here12")
