@@ -2,9 +2,11 @@ import express from "express";
 import "dotenv/config"
 import {router} from "./router/router.js"
 import cors from "cors"
+import cookieParser from "cookie-parser"
 const port=process.env.PORT
 const app=express();
-const access=app.use(cors({
+app.use(cookieParser())
+app.use(cors({
     origin:"http://localhost:5173",
     credentials:true
 }))

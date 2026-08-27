@@ -4,7 +4,7 @@ import {prisma} from "@repo/db/prisma"
 import bcrypt from "bcrypt"
 import "dotenv/config"
 import jwt from "jsonwebtoken"
-const jwtSecret=process.env.JWTSECRET
+const jwtSecret=process.env.JWT_SECRET
 const production=process.env.PRODUCTION
  const login=async(req:Request,res:Response)=>{
     if(!jwtSecret){
@@ -15,42 +15,49 @@ const production=process.env.PRODUCTION
     }
 
     const {email,password}=req.body;
-    const safeParse=loginSchema.safeParse(email,password);
+    const safeParse=loginSchema.safeParse({email,password});
     if(!safeParse.success){
        return res.status(400).json({
         message:safeParse.error
        })
     }
-    const check=await prisma.user.findOne({
+    const check=await prisma.user.findFirst({
         where:{
             email:safeParse.data.email
         }
     })
+    console.log("after check")
     if(!check){
         return res.status(400).json({
             message:"Email does not exist, please register"
         })
     }
     const pass=check.password
-    const compare=bcrypt.compare(safeParse.data.password,pass)
+    console.log("after check")
+    const compare=await bcrypt.compare(safeParse.data.password,pass)
     if(!compare){
         return res.status(400).json({
             message:"Password does not match"
         })
     }
+    console.log("after check")
     const sign=await jwt.sign({data:check.id},jwtSecret,{expiresIn:"30d"});
     if(!sign){
         return res.status(400).json({
             message:"Please login again"
         })
     }
-    const token=check.id
+    const token=sign
+    console.log(token)
     
-    return res.cookie("token",token,{
+     res.cookie("token",token,{
         maxAge:1000*60*60*24*30,
         httpOnly:true,
         sameSite:"lax",
         secure:production?true:false,
+    })
+    return res.status(200).json({
+        message:"Login successfull"
     })
 }
 export default login;
