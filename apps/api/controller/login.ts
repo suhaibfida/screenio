@@ -5,7 +5,8 @@ import bcrypt from "bcrypt"
 import "dotenv/config"
 import jwt from "jsonwebtoken"
 const jwtSecret=process.env.JWTSECRET
-export const login=async(req:Request,res:Response)=>{
+const production=process.env.PRODUCTION
+ const login=async(req:Request,res:Response)=>{
     if(!jwtSecret){
         console.error("jwtSecret is empty")
         return res.status(500).json({
@@ -49,11 +50,7 @@ export const login=async(req:Request,res:Response)=>{
         maxAge:1000*60*60*24*30,
         httpOnly:true,
         sameSite:"lax",
-        secure:true,
+        secure:production?true:false,
     })
-
-
-
-
-
 }
+export default login;
