@@ -11,13 +11,32 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
-
+enum Role{
+  USER
+  ADMIN
+}
 model User{
-  id       String @id @default(uuid())
-  username String @unique
-  email    String @unique
-  name     String?
-  avatar   String?
-  googleId String?
-  password String
+  id           String @id @default(uuid())
+  username     String @unique
+  email        String @unique
+  role         Role @default(USER)
+  description  description[]
+  jobs         jobs[]
+
+}
+
+model description{
+id          String @id @default(uuid())
+appliedto   String 
+link        String
+description String
+userId      String
+user        User   @relation(fields:[userId],references:[id])
+}
+model jobs{
+  id          String  @id @default(uuid())
+  title       String
+  description String  
+  userId      String
+  user        User @relation(fields:[userId],references:[id]) 
 }

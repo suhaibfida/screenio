@@ -28,7 +28,7 @@ const authMiddleware=async(req:Request,res:Response,next:NextFunction)=>{
             message:"Invalid user, please login again"
         })
     }
-         req.id=(verify as JwtPayload).data
+         req.id=(verify as JwtPayload).token
     
     
    
