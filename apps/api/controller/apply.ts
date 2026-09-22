@@ -14,6 +14,4 @@ export const apply=(req:Request,res:Response)=>{
        res.status(200).json({
         message:"Applied Successfully"
        })
-    
-
 }
